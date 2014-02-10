@@ -10,7 +10,8 @@ it('compiles Haml into HTML', function (cb) {
     assert.equal(file.relative, 'fixture.html');
     assert.equal(
       file.contents.toString(),
-      "<p>Hello world!</p>\n<a href='http://example.com'>Example</a>\n<div ng-include=\"'tpl.html'\"></div>\n"
+      "<p>Hello world!</p>\n<a href='http://example.com'>Example</a>\n<div " +
+      "ng-include=\"'tpl.html'\"></div>\n"
     );
   });
 
@@ -18,7 +19,8 @@ it('compiles Haml into HTML', function (cb) {
 
   stream.write(new gutil.File({
     path: 'fixture.haml',
-    contents: new Buffer("%p Hello world!\n%a{href: 'http://example.com'} Example\n%div{ng: {include: \"'tpl.html'\"}}")
+    contents: new Buffer("%p Hello world!\n%a{href: 'http://example.com'} " +
+                         "Example\n%div{ng: {include: \"'tpl.html'\"}}")
   }));
 
   stream.end();
