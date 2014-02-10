@@ -1,0 +1,41 @@
+{
+  "name": "gulp-ruby-haml",
+  "version": "0.0.1",
+  "description": "Compile Haml to HTML with Ruby Haml",
+  "license": "MIT",
+  "repository": "moneypenny/gulp-ruby-haml",
+  "author": {
+    "name": "Sarah Vessels",
+    "email": "cheshire137@gmail.com",
+    "url": "http://www.sarah-vessels.com"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "gulpplugin",
+    "haml",
+    "html",
+    "compile",
+    "preprocessor",
+    "markup",
+    "ruby"
+  ],
+  "dependencies": {
+    "gulp-util": "~2.2.0",
+    "through2": "~0.4.0",
+    "win-spawn": "~2.0.0",
+    "dargs": "~0.1.0",
+    "temp-write": "~0.2.0",
+    "which": "~1.0.5"
+  },
+  "devDependencies": {
+    "mocha": "*"
+  }
+}
