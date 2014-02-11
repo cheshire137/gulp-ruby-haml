@@ -1,21 +1,23 @@
-var es = require('event-stream');
 var spawn = require('win-spawn');
 var gutil = require('gulp-util');
 var Buffer = require('buffer').Buffer;
 var path = require('path');
+var through = require('through2');
 var PluginError = gutil.PluginError;
 
 const PLUGIN_NAME = 'gulp-ruby-haml';
 
 module.exports = function (opt) {
-  function modifyFile(file) {
+  function modifyFile(file, enc, callback) {
     if (file.isNull()) {
-      return this.emit('data', file);
+      this.push(file);
+      return callback();
     }
 
     if (file.isStream()) {
-      return this.emit('error',
-                       new PluginError(PLUGIN_NAME, 'Streaming not supported'));
+      this.emit('error',
+                new PluginError(PLUGIN_NAME, 'Streaming not supported'));
+      return callback();
     }
 
     opt = opt || {};
@@ -54,8 +56,9 @@ module.exports = function (opt) {
 
       file.path = destination;
       self.emit('data', file);
+      return callback();
     });
   }
 
-  return es.through(modifyFile);
+  return through.obj(modifyFile);
 };

@@ -4,7 +4,6 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var fs = require('fs');
 var haml = require('../index');
-var es = require('event-stream');
 var path = require('path');
 
 var createFile = function (file_path, contents) {
