@@ -18,14 +18,14 @@ module.exports = function (opt) {
                        new PluginError(PLUGIN_NAME, 'Streaming not supported'));
     }
 
-    var str = file.contents.toString('utf8');
-    var dest = gutil.replaceExtension(file.path, ".html");
-
+    opt = opt || {};
     var options = {};
-    if (opt) {
-    }
+    options.outExtension = opt.outExtension || '.html';
 
-    var args = ['haml', file.path];
+    var str = file.contents.toString('utf8');
+    var destination = gutil.replaceExtension(file.path, options.outExtension);
+
+    var args = ['haml', file.path, destination];
     var cp = spawn(args.shift(), args);
 
     var self = this;
@@ -33,9 +33,6 @@ module.exports = function (opt) {
       self.emit('error', new PluginError(PLUGIN_NAME, err));
       return callback();
     });
-
-    var haml_data = '';
-    cp.stdout.on('data', function (data) { haml_data += data.toString(); });
 
     var errors = '';
     cp.stderr.setEncoding('utf8');
@@ -55,21 +52,9 @@ module.exports = function (opt) {
         return callback();
       }
 
-      file.contents = new Buffer(haml_data);
-      file.path = dest;
+      file.path = destination;
       self.emit('data', file);
     });
-
-    if (options.sourceMap) {
-      sourceMapFile = new gutil.File({
-        cwd: file.cwd,
-        base: file.base,
-        path: dest + '.map',
-        contents: new Buffer(data.v3SourceMap)
-      });
-      this.emit('data', sourceMapFile);
-      data = data.js + "\n/*\n//# sourceMappingURL=" + path.basename(sourceMapFile.path) + "\n*/\n";
-    }
   }
 
   return es.through(modifyFile);

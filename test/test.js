@@ -17,6 +17,11 @@ var createFile = function (file_path, contents) {
   });
 };
 
+afterEach(function() {
+  fs.unlink('test/fixture.html', function (err) {
+  });
+});
+
 it('compiles Haml to HTML', function (done) {
   var fixture_path = 'test/fixture.haml';
   var contents = new Buffer(fs.readFileSync(fixture_path));
@@ -25,7 +30,12 @@ it('compiles Haml to HTML', function (done) {
          on('data', function(newFile) {
            assert.equal(newFile.path, 'test/fixture.html');
            assert.equal(newFile.relative, path.basename('test/fixture.html'));
-           assert.equal(String(newFile.contents), expected);
+           fs.stat(newFile.path, function (err, stat) {
+             assert.equal(err, null, 'HTML file ' + newFile.path +
+                                     ' was not written');
+           });
+           var actual = String(fs.readFileSync(newFile.path));
+           assert.equal(actual, expected)
            done();
          }).
          write(createFile(fixture_path, contents));
