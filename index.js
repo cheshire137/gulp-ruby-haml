@@ -4,20 +4,21 @@ var Buffer = require('buffer').Buffer;
 var path = require('path');
 var through = require('through2');
 var PluginError = gutil.PluginError;
+var clone = require('clone');
+var es = require('event-stream');
 
 const PLUGIN_NAME = 'gulp-ruby-haml';
 
 module.exports = function (opt) {
-  function modifyFile(file, enc, callback) {
+  function modifyFile(file, callback) {
     if (file.isNull()) {
-      this.push(file);
-      return callback();
+      return callback(null, file);
     }
 
     if (file.isStream()) {
       this.emit('error',
                 new PluginError(PLUGIN_NAME, 'Streaming not supported'));
-      return callback();
+      return callback(null, file);
     }
 
     opt = opt || {};
@@ -25,16 +26,17 @@ module.exports = function (opt) {
     options.outExtension = opt.outExtension || '.html';
 
     var str = file.contents.toString('utf8');
-    var destination = gutil.replaceExtension(file.path, options.outExtension);
-
-    var args = ['haml', file.path, destination];
+    var args = ['haml', file.path];
     var cp = spawn(args.shift(), args);
 
     var self = this;
     cp.on('error', function (err) {
       self.emit('error', new PluginError(PLUGIN_NAME, err));
-      return callback();
+      return callback(null, file);
     });
+
+    var haml_data = '';
+    cp.stdout.on('data', function (data) { haml_data += data.toString(); });
 
     var errors = '';
     cp.stderr.setEncoding('utf8');
@@ -44,21 +46,25 @@ module.exports = function (opt) {
       if (errors) {
         self.emit('error', new PluginError(PLUGIN_NAME, errors));
         self.push(file);
-        return callback();
+        return callback(null, file);
       }
 
       if (code > 0) {
         self.emit('error', new PluginError(PLUGIN_NAME,
                                            'Exited with error code ' + code));
         self.push(file);
-        return callback();
+        return callback(null, file);
       }
 
-      file.path = destination;
-      self.emit('data', file);
-      return callback();
+      var newFile = clone(file);
+      newFile.path = gutil.replaceExtension(file.path, options.outExtension);
+      newFile.contents = new Buffer(haml_data);
+      return callback(null, newFile);
+      // file.path = destination;
+      // self.emit('data', file);
+      // return callback();
     });
   }
 
-  return through.obj(modifyFile);
+  return es.map(modifyFile);
 };
