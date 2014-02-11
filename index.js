@@ -1,101 +1,76 @@
-'use strict';
-var fs = require('fs');
-var path = require('path');
-var gutil = require('gulp-util');
-var through = require('through2');
+var es = require('event-stream');
 var spawn = require('win-spawn');
-var tempWrite = require('temp-write');
-var dargs = require('dargs');
-var which = require('which');
+var gutil = require('gulp-util');
+var Buffer = require('buffer').Buffer;
+var path = require('path');
+var PluginError = gutil.PluginError;
 
-module.exports = function (options) {
-  options = options || {};
-  var passedArgs = dargs(options, ['bundleExec']);
-  var bundleExec = options.bundleExec;
+const PLUGIN_NAME = 'gulp-ruby-haml';
 
-  try {
-    which.sync('haml');
-  } catch (err) {
-    throw new gutil.PluginError('gulp-ruby-haml',
-                                'You need to have Ruby and Haml installed ' +
-                                'and in your PATH for this task to work. ' +
-                                'Try gem install haml.');
-  }
-
-  return through.obj(function (file, enc, cb) {
-    var self = this;
-
+module.exports = function (opt) {
+  function modifyFile(file) {
     if (file.isNull()) {
-      this.push(file);
-      return cb();
+      return this.emit('data', file);
     }
 
     if (file.isStream()) {
-      this.emit('error',
-                new gutil.PluginError('gulp-ruby-haml',
-                                      'Streaming not supported'));
-      return cb();
+      return this.emit('error',
+                       new PluginError(PLUGIN_NAME, 'Streaming not supported'));
     }
 
-    var outExtension = passedArgs.outExtension || '.html';
-    var dest = gutil.replaceExtension(file.path, outExtension);
+    var str = file.contents.toString('utf8');
+    var dest = gutil.replaceExtension(file.path, ".html");
 
-    tempWrite(file.contents, path.basename(file.path), function (err, tempFile) {
-      if (err) {
-        self.emit('error', new gutil.PluginError('gulp-ruby-haml', err));
-        self.push(file);
-        return cb();
-      }
+    var options = {};
+    if (opt) {
+    }
 
-      var args = ['haml', tempFile].concat(passedArgs);
+    var args = ['haml', file.path];
+    var cp = spawn(args.shift(), args);
 
-      if (bundleExec) {
-        args.unshift('bundle', 'exec');
-      }
-
-      var cp = spawn(args.shift(), args);
-
-      cp.on('error', function (err) {
-        self.emit('error', new gutil.PluginError('gulp-ruby-haml', err));
-        self.push(file);
-        return cb();
-      });
-
-      var haml_data = '';
-      cp.stdout.on('data', function (data) { haml_data += data.toString(); });
-
-      var errors = '';
-      cp.stderr.setEncoding('utf8');
-      cp.stderr.on('data', function (data) { errors += data; });
-
-      cp.on('close', function (code) {
-        if (errors) {
-          self.emit('error', new gutil.PluginError('gulp-ruby-haml', '\n' + errors.replace(tempFile, file.path).
-                   replace('Use --trace for backtrace.\n', '')));
-          self.push(file);
-          return cb();
-        }
-
-        if (code > 0) {
-          self.emit('error', new gutil.PluginError('gulp-ruby-haml',
-                                                   'Exited with error code ' +
-                                                   code));
-          self.push(file);
-          return cb();
-        }
-
-        if (err) {
-          self.emit('error', new gutil.PluginError('gulp-ruby-haml', err));
-          self.push(file);
-          return cb();
-        }
-
-        file.contents = new Buffer(haml_data);
-        file.path = dest;
-        self.emit('data', file);
-
-        return cb();
-      });
+    var self = this;
+    cp.on('error', function (err) {
+      self.emit('error', new PluginError(PLUGIN_NAME, err));
+      return callback();
     });
-  });
+
+    var haml_data = '';
+    cp.stdout.on('data', function (data) { haml_data += data.toString(); });
+
+    var errors = '';
+    cp.stderr.setEncoding('utf8');
+    cp.stderr.on('data', function (data) { errors += data.toString(); });
+
+    cp.on('close', function (code) {
+      if (errors) {
+        self.emit('error', new PluginError(PLUGIN_NAME, errors));
+        self.push(file);
+        return callback();
+      }
+
+      if (code > 0) {
+        self.emit('error', new PluginError(PLUGIN_NAME,
+                                           'Exited with error code ' + code));
+        self.push(file);
+        return callback();
+      }
+
+      file.contents = new Buffer(haml_data);
+      file.path = dest;
+      self.emit('data', file);
+    });
+
+    if (options.sourceMap) {
+      sourceMapFile = new gutil.File({
+        cwd: file.cwd,
+        base: file.base,
+        path: dest + '.map',
+        contents: new Buffer(data.v3SourceMap)
+      });
+      this.emit('data', sourceMapFile);
+      data = data.js + "\n/*\n//# sourceMappingURL=" + path.basename(sourceMapFile.path) + "\n*/\n";
+    }
+  }
+
+  return es.through(modifyFile);
 };
