@@ -1,12 +1,27 @@
 # gulp-ruby-haml
 
-This is a [gulp](http://gulpjs.com/) plugin that will use the `haml` command line script to compile your Haml files into HTML. You need both Ruby and Haml installed to use this. Try `gem install haml` or add `gem 'haml'` to your Gemfile.
+This is a [gulp](http://gulpjs.com/) plugin that will use the `haml` command
+line script to compile your Haml files into HTML. You need both Ruby and Haml
+installed to use this. Try `gem install haml`. If you use
+[Bundler](http://bundler.io/), add `gem 'haml'` to your Gemfile and run
+`bundle install`.
 
 ## gulpfile.js example
 
+    var gulp = require('gulp');
+    var watch = require('gulp-watch');
+    var haml = require('gulp-ruby-haml');
+
     // Compile Haml into HTML
     gulp.task('haml', function() {
-      gulp.src('./haml/**/*.haml', {read: false}).
+      gulp.src('./app/assets/haml/**/*.haml', {read: false}).
+           pipe(haml()).
+           pipe(gulp.dest('./public'));
+    });
+
+    // Watch for changes in Haml files
+    gulp.task('haml-watch', function() {
+      gulp.src('./app/assets/haml/**/*.haml', {read: false}).
            pipe(watch()).
            pipe(haml()).
            pipe(gulp.dest('./public'));
