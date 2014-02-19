@@ -6,30 +6,31 @@ var fs = require('fs');
 var haml = require('../index');
 var path = require('path');
 
-var in_path = path.join(__dirname, './fixture.haml');
-var out_path = path.join(__dirname, './fixture.html');
+var proj_dir = path.join(__dirname, '..');
+var dest_dir = path.join(proj_dir, 'tmp');
+var fixture_dir = path.join(__dirname, 'fixtures');
 
-gulp.task('haml', function() {
-  return gulp.src(in_path).
-              pipe(haml()).
-              pipe(gulp.dest(__dirname));
-});
+describe('basic Haml conversion', function() {
+  var in_path = path.join(fixture_dir, 'basic.haml');
 
-it('compiles Haml into HTML', function (done) {
-  gulp.run('haml', function() {
-    assert.equal(fs.existsSync(out_path), true,
-                 'Expected ' + out_path + ' to exist');
-    var out_contents = fs.readFileSync(out_path);
-    var expected = "<p>Hello world!</p>\n" +
-                   "<a href='http://example.com'>Example</a>\n" +
-                   "<div ng-include=\"'tpl.html'\"></div>\n";
-    assert.equal(out_contents, expected, 'Haml was not compiled as expected');
-    done();
+  gulp.task('basic-haml', function() {
+    return gulp.src(in_path).
+                pipe(haml()).
+                pipe(gulp.dest(dest_dir));
   });
-});
 
-afterEach(function() {
-  if (fs.readFileSync(out_path)) {
-    fs.unlink(out_path, function (err) {});
-  }
+  it('compiles Haml into HTML', function (done) {
+    var out_path = path.join(dest_dir, 'basic.html');
+    gulp.run('basic-haml', function() {
+      assert.equal(fs.existsSync(out_path), true,
+                   'Expected ' + out_path + ' to exist');
+      var out_contents = fs.readFileSync(out_path);
+      var expected = "<p>Hello world!</p>\n" +
+                     "<a href='http://example.com'>Example</a>\n" +
+                     "<div ng-include=\"'tpl.html'\"></div>\n";
+      assert.equal(out_contents, expected, 'Haml was not compiled as expected');
+      fs.unlink(out_path, function (err) {});
+      done();
+    });
+  });
 });

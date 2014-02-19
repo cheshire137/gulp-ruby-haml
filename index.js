@@ -1,23 +1,20 @@
 var spawn = require('win-spawn');
 var gutil = require('gulp-util');
 var Buffer = require('buffer').Buffer;
-var path = require('path');
-var through = require('through2');
 var PluginError = gutil.PluginError;
 var clone = require('clone');
-var es = require('event-stream');
+var through = require('through2');
 
 const PLUGIN_NAME = 'gulp-ruby-haml';
 
 module.exports = function (opt) {
-  function modifyFile(file, callback) {
+  function modifyFile(file, enc, callback) {
     if (file.isNull()) {
       return callback(null, file);
     }
 
-    var self = this;
     if (file.isStream()) {
-      self.emit('error',
+      this.emit('error',
                 new PluginError(PLUGIN_NAME, 'Streaming not supported'));
       return callback(null, file);
     }
@@ -30,6 +27,7 @@ module.exports = function (opt) {
     var args = ['haml', file.path];
     var cp = spawn(args.shift(), args);
 
+    var self = this;
     cp.on('error', function (err) {
       self.emit('error', new PluginError(PLUGIN_NAME, err));
       return callback(null, file);
@@ -60,11 +58,8 @@ module.exports = function (opt) {
       newFile.path = gutil.replaceExtension(file.path, options.outExtension);
       newFile.contents = new Buffer(haml_data);
       return callback(null, newFile);
-      // file.path = destination;
-      // self.emit('data', file);
-      // return callback();
     });
   }
 
-  return es.map(modifyFile);
+  return through.obj(modifyFile);
 };
