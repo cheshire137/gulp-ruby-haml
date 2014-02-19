@@ -60,7 +60,7 @@ describe('basic Haml conversion with double quotes', function() {
   });
 });
 
-describe('it throws error on invalid Haml', function() {
+describe('invalid Haml', function() {
   var in_path = path.join(fixture_dir, 'invalid.haml');
   var error = null;
 
@@ -75,6 +75,15 @@ describe('it throws error on invalid Haml', function() {
     gulp.run('invalid-haml', function() {
       assert.equal(fs.existsSync(out_path), false,
                    'Expected ' + out_path + ' to not exist');
+      done();
+    });
+  });
+
+  it('does not copy source Haml file into destination dir', function (done) {
+    var src_in_dest = path.join(dest_dir, 'invalid.haml');
+    gulp.run('invalid-haml', function() {
+      assert.equal(fs.existsSync(src_in_dest), false,
+                   'Expected ' + src_in_dest + ' to not exist');
       done();
     });
   });

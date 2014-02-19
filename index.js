@@ -48,15 +48,13 @@ module.exports = function (opt) {
     cp.on('close', function (code) {
       if (errors) {
         self.emit('error', new PluginError(PLUGIN_NAME, errors));
-        self.push(file);
-        return callback(null, file);
+        return callback(null, null);
       }
 
       if (code > 0) {
         self.emit('error', new PluginError(PLUGIN_NAME,
                                            'Exited with error code ' + code));
-        self.push(file);
-        return callback(null, file);
+        return callback(null, null);
       }
 
       var newFile = clone(file);
