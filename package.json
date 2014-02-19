@@ -1,6 +1,6 @@
 {
   "name": "gulp-ruby-haml",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Compile Haml to HTML with Ruby Haml",
   "license": "MIT",
   "repository": {
