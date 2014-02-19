@@ -15,8 +15,9 @@ module.exports = function (opt) {
       return callback(null, file);
     }
 
+    var self = this;
     if (file.isStream()) {
-      this.emit('error',
+      self.emit('error',
                 new PluginError(PLUGIN_NAME, 'Streaming not supported'));
       return callback(null, file);
     }
@@ -29,7 +30,6 @@ module.exports = function (opt) {
     var args = ['haml', file.path];
     var cp = spawn(args.shift(), args);
 
-    var self = this;
     cp.on('error', function (err) {
       self.emit('error', new PluginError(PLUGIN_NAME, err));
       return callback(null, file);

@@ -6,36 +6,30 @@ var fs = require('fs');
 var haml = require('../index');
 var path = require('path');
 
-var createFile = function (file_path, contents) {
-  var base = path.dirname(file_path);
-  return new gutil.File({
-    path: file_path,
-    base: base,
-    cwd: path.dirname(base),
-    contents: contents
-  });
-};
+var in_path = path.join(__dirname, './fixture.haml');
+var out_path = path.join(__dirname, './fixture.html');
 
-afterEach(function() {
-  fs.unlink('test/fixture.html', function (err) {
+gulp.task('haml', function() {
+  return gulp.src(in_path).
+              pipe(haml()).
+              pipe(gulp.dest(__dirname));
+});
+
+it('compiles Haml into HTML', function (done) {
+  gulp.run('haml', function() {
+    assert.equal(fs.existsSync(out_path), true,
+                 'Expected ' + out_path + ' to exist');
+    var out_contents = fs.readFileSync(out_path);
+    var expected = "<p>Hello world!</p>\n" +
+                   "<a href='http://example.com'>Example</a>\n" +
+                   "<div ng-include=\"'tpl.html'\"></div>\n";
+    assert.equal(out_contents, expected, 'Haml was not compiled as expected');
+    done();
   });
 });
 
-it('compiles Haml to HTML', function (done) {
-  var fixture_path = 'test/fixture.haml';
-  var contents = new Buffer(fs.readFileSync(fixture_path));
-  var expected = "<p>Hello world!</p>\n<a href='http://example.com'>Example</a>\n<div ng-include=\"'tpl.html'\"></div>\n";
-  haml().on('error', done).
-         on('data', function(newFile) {
-           assert.equal(newFile.path, 'test/fixture.html');
-           assert.equal(newFile.relative, path.basename('test/fixture.html'));
-           fs.stat(newFile.path, function (err, stat) {
-             assert.equal(err, null, 'HTML file ' + newFile.path +
-                                     ' was not written');
-           });
-           var actual = String(fs.readFileSync(newFile.path));
-           assert.equal(actual, expected)
-           done();
-         }).
-         write(createFile(fixture_path, contents));
+afterEach(function() {
+  if (fs.readFileSync(out_path)) {
+    fs.unlink(out_path, function (err) {});
+  }
 });
