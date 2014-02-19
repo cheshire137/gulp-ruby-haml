@@ -3,7 +3,10 @@
   "version": "0.0.2",
   "description": "Compile Haml to HTML with Ruby Haml",
   "license": "MIT",
-  "repository": "moneypenny/gulp-ruby-haml",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moneypenny/gulp-ruby-haml.git"
+  },
   "author": {
     "name": "Sarah Vessels",
     "email": "cheshire137@gmail.com",
