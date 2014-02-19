@@ -22,9 +22,14 @@ module.exports = function (opt) {
     opt = opt || {};
     var options = {};
     options.outExtension = opt.outExtension || '.html';
+    options.doubleQuote = opt.doubleQuote || false;
 
     var str = file.contents.toString('utf8');
-    var args = ['haml', file.path];
+    var args = ['haml'];
+    if (options.doubleQuote) {
+      args.push('-q');
+    }
+    args.push(file.path);
     var cp = spawn(args.shift(), args);
 
     var self = this;

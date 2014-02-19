@@ -6,6 +6,11 @@ installed to use this. Try `gem install haml`. If you use
 [Bundler](http://bundler.io/), add `gem 'haml'` to your Gemfile and run
 `bundle install`.
 
+## Options
+
+Pass `{doubleQuote: true}` to use `"` around HTML attributes instead of `'`.
+This uses the `-q`/`--double-quote-attributes` option with `haml`.
+
 ## gulpfile.js example
 
     var gulp = require('gulp');
@@ -16,6 +21,14 @@ installed to use this. Try `gem install haml`. If you use
     gulp.task('haml', function() {
       gulp.src('./app/assets/haml/**/*.haml', {read: false}).
            pipe(haml()).
+           pipe(gulp.dest('./public'));
+    });
+
+    // Compile Haml into HTML with double quotes around attributes
+    // Same as haml -q
+    gulp.task('haml-double-quote', function() {
+      gulp.src('./app/assets/haml/**/*.haml', {read: false}).
+           pipe(haml({doubleQuote: true})).
            pipe(gulp.dest('./public'));
     });
 

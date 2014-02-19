@@ -35,6 +35,31 @@ describe('basic Haml conversion', function() {
   });
 });
 
+describe('basic Haml conversion with double quotes', function() {
+  var in_path = path.join(fixture_dir, 'basic.haml');
+
+  gulp.task('quoted-haml', function() {
+    return gulp.src(in_path).
+                pipe(haml({doubleQuote: true})).
+                pipe(gulp.dest(dest_dir));
+  });
+
+  it('compiles Haml into HTML with double-quoted attributes', function (done) {
+    var out_path = path.join(dest_dir, 'basic.html');
+    gulp.run('quoted-haml', function() {
+      assert.equal(fs.existsSync(out_path), true,
+                   'Expected ' + out_path + ' to exist');
+      var out_contents = fs.readFileSync(out_path);
+      var expected = "<p>Hello world!</p>\n" +
+                     "<a href=\"http://example.com\">Example</a>\n" +
+                     "<div ng-include=\"'tpl.html'\"></div>\n";
+      assert.equal(out_contents, expected, 'Haml was not compiled as expected');
+      fs.unlink(out_path, function (err) {});
+      done();
+    });
+  });
+});
+
 describe('it throws error on invalid Haml', function() {
   var in_path = path.join(fixture_dir, 'invalid.haml');
   var error = null;
