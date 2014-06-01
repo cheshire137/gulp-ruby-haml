@@ -9,14 +9,12 @@ installed to use this. Try `gem install haml`. If you use
 ## Options
 
 ### style
-
 Output style. Can be indented (default) or ugly.
 
 `{style: ugly}`
 
 
 ### format
-
 Output format. Can be html5 (default), xhtml, or html4.
 
 `{format: "xhtml"}`
