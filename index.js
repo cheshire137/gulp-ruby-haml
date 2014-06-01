@@ -18,7 +18,6 @@ module.exports = function (opt) {
     }
 
     if (file.isStream()) {
-      // Use stdin?
       this.emit('error',
                 new PluginError(PLUGIN_NAME, 'Streaming not supported'));
       return callback(null, file);
