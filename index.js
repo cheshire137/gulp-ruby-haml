@@ -7,6 +7,10 @@ var through = require('through2');
 
 const PLUGIN_NAME = 'gulp-ruby-haml';
 
+var isArray = function(obj) {
+  return Object.prototype.toString.call(obj) === "[object Array]"
+}
+
 module.exports = function (opt) {
   function modifyFile(file, enc, callback) {
     if (file.isNull()) {
@@ -14,6 +18,7 @@ module.exports = function (opt) {
     }
 
     if (file.isStream()) {
+      // Use stdin?
       this.emit('error',
                 new PluginError(PLUGIN_NAME, 'Streaming not supported'));
       return callback(null, file);
@@ -21,14 +26,54 @@ module.exports = function (opt) {
 
     opt = opt || {};
     var options = {};
-    options.outExtension = opt.outExtension || '.html';
-    options.doubleQuote = opt.doubleQuote || false;
+    //Clone 'opt' into options
+    for(var key in opt) { options[key] = opt[key]; }
+    options.outExtension = options.outExtension || '.html';
+    options.doubleQuote = options.doubleQuote || false;
 
     var str = file.contents.toString('utf8');
     var args = ['haml'];
-    if (options.doubleQuote) {
+
+    if (options.trace)
+      args.push('--trace');
+   
+    if (options.unixNewlines)
+      args.push('--unix-newlines');
+   
+    if (options.style != null)
+      args.push('-t', options.style.toString());
+   
+    if (options.format != null)
+      args.push('-f', options.format.toString());
+   
+    if (options.escapeHtml)
+      args.push('-e');
+   
+    if (options.noEscapeAttrs)
+      args.push('--no-escape-attrs')
+   
+    if (options.doubleQuote || options.doubleQuoteAttributes)
       args.push('-q');
+   
+    if (options.cdata)
+      args.push('--cdata');
+   
+    if (options.autoclose != null) {
+      var list = options.autoclose;
+      if(isArray(list))
+        list = list.join(",");
+      args.push('--autoclose', list.toString());
     }
+
+    if (options.require != null)
+      args.push('-r', '"' + options.require + '"');
+
+    if(options.suppressEval)
+      args.push('--suppress-eval');
+
+    if(options.loadPath != null)
+      args.push('-I', '"' + options.loadPath + '"');
+
     args.push(file.path);
     var cp = spawn(args.shift(), args);
 

@@ -1,3 +1,7 @@
+## 0.0.4
+
+- Add additional command line options
+
 ## 0.0.3
 
 - Don't pass invalid Haml file through, so it doesn't end up in your `gulp.dest`.
