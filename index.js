@@ -26,10 +26,10 @@ module.exports = function (opt) {
 
     var str = file.contents.toString('utf8');
     var args = ['haml'];
+    args.push('-s');
     if (options.doubleQuote) {
       args.push('-q');
     }
-    args.push(file.path);
     var cp = spawn(args.shift(), args);
 
     var self = this;
@@ -62,6 +62,9 @@ module.exports = function (opt) {
       newFile.contents = new Buffer(haml_data);
       return callback(null, newFile);
     });
+
+    cp.stdin.write(file.contents);
+    cp.stdin.end();
   }
 
   return through.obj(modifyFile);
