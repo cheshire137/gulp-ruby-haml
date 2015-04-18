@@ -31,7 +31,7 @@ module.exports = function (opt) {
     if (options.doubleQuote) {
       args.push('-q');
     }
-    if(options.require) {
+    if (options.require) {
       args.push('-r');
       args.push(options.require);
     }
