@@ -16,7 +16,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "mocha; echo \"Running jshint\"; ./node_modules/jshint/bin/jshint index.js"
+    "test": "if [ -d \"tmp\" ]; then if find tmp -mindepth 1 -print -quit | grep -q .; then rm tmp/*; fi; fi; mocha; echo \"Running jshint\"; ./node_modules/jshint/bin/jshint index.js test/test.js"
   },
   "files": [
     "index.js"
