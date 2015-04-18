@@ -52,6 +52,11 @@ This uses the `-q`/`--double-quote-attributes` option with `haml`.
            pipe(gulp.dest('./public'));
     });
 
+## How to Test This Plugin
+
+    npm install
+    npm test
+
 ## Thanks
 
 This largely came from [gulp-ruby-sass](https://github.com/sindresorhus/gulp-ruby-sass) by Sindre Sorhus.
