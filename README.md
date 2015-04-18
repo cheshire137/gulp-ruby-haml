@@ -32,6 +32,13 @@ This uses the `-q`/`--double-quote-attributes` option with `haml`.
            pipe(gulp.dest('./public'));
     });
 
+    // Pipe Haml output from one command into another without writing the
+    // Haml to file first
+    gulp.src('foo/bar/**/*.haml').
+         pipe(replace('albert', 'dilbert')).
+         pipe(haml()).
+         pipe(gulp.dest('baz'));
+
     // Watch for changes in Haml files
     gulp.task('haml-watch', function() {
       gulp.src('./app/assets/haml/**/*.haml', {read: false}).
