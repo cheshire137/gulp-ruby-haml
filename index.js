@@ -38,7 +38,6 @@ module.exports = function (opt) {
       args.push('-E');
       args.push(options.encodings);
     }
-    args.push(file.path);
     if (options.require) {
       args.push('-r');
       args.push(options.require);
