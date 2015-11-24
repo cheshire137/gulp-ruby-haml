@@ -13,7 +13,7 @@
   "regexp": true,
   "undef": true,
   "unused": "vars",
-  "strict": true,
+  "strict": false,
   "trailing": true,
   "smarttabs": true,
   "validthis": true,
