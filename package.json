@@ -1,6 +1,6 @@
 {
   "name": "gulp-ruby-haml",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "Compile Haml to HTML with Ruby Haml",
   "license": "MIT",
   "repository": {
@@ -16,7 +16,11 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "npm run-script style && npm run-script unit-test",
+    "jscs": "node_modules/.bin/jscs index.js test/test.js",
+    "jshint": "node_modules/.bin/jshint index.js test/test.js",
+    "style": "npm run-script jscs && npm run-script jshint",
+    "unit-test": "if [ -d \"tmp\" ]; then if find tmp -mindepth 1 -print -quit | grep -q .; then rm tmp/*; fi; fi; mocha"
   },
   "files": [
     "index.js"
@@ -38,6 +42,8 @@
   },
   "devDependencies": {
     "gulp": "~3.5.2",
+    "jscs": "^1.13.1",
+    "jshint": "^2.8.0",
     "mocha": "*"
   }
 }

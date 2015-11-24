@@ -1,0 +1,11 @@
+{
+  "preset": "google",
+  "maximumLineLength": {
+    "value": 80,
+    "tabSize": 2,
+    "allowUrlComments": true,
+    "allowRegex": true
+  },
+  "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties"
+}
+

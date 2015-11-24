@@ -1,0 +1,24 @@
+{
+  "node": true,
+  "browser": true,
+  "esnext": true,
+  "bitwise": false,
+  "camelcase": false,
+  "curly": true,
+  "eqeqeq": true,
+  "immed": true,
+  "latedef": true,
+  "newcap": false,
+  "noarg": true,
+  "regexp": true,
+  "undef": true,
+  "unused": "vars",
+  "strict": false,
+  "trailing": true,
+  "smarttabs": true,
+  "validthis": true,
+  "globals": {
+    "describe": false,
+    "it": false
+  }
+}

@@ -1,6 +1,8 @@
-## 0.0.4
+## 0.0.5
 
-- Add additional command line options
+- Add `encodings` and additional command line options.
+
+## 0.0.4
 
 ## 0.0.3
 

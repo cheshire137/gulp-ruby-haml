@@ -1,5 +1,7 @@
 # gulp-ruby-haml
 
+[![Build Status](https://semaphoreci.com/api/v1/projects/507d5fc2-af2c-4dee-9c1c-30134ffcac3a/613987/badge.svg)](https://semaphoreci.com/cheshire137/gulp-ruby-haml)
+
 This is a [gulp](http://gulpjs.com/) plugin that will use the `haml` command
 line script to compile your Haml files into HTML. You need both Ruby and Haml
 installed to use this. Try `gem install haml`. If you use
@@ -52,6 +54,8 @@ List of elements to be automatically self-closed.
 specify $LOAD_PATH directory (may be used more than once). Same as 'ruby -I'.
 `{loadPath: "my/load/path"}`
 
+Use the `encodings` option to specify encodings, e.g., `{encodings: "UTF-8"}`.
+
 ## gulpfile.js example
 
     var gulp = require('gulp');
@@ -73,6 +77,18 @@ specify $LOAD_PATH directory (may be used more than once). Same as 'ruby -I'.
            pipe(gulp.dest('./public'));
     });
 
+    // Pipe Haml output from one command into another without writing the
+    // Haml to file first
+    gulp.src('foo/bar/**/*.haml').
+         pipe(replace('albert', 'dilbert')).
+         pipe(haml()).
+         pipe(gulp.dest('baz'));
+
+    // Require an additional Ruby file for compilation
+    gulp.src(in_path).
+         pipe(haml({require: ["./path/to/my_ruby_script.rb"]})).
+         pipe(gulp.dest(dest_dir));
+
     // Watch for changes in Haml files
     gulp.task('haml-watch', function() {
       gulp.src('./app/assets/haml/**/*.haml', {read: false}).
@@ -80,6 +96,11 @@ specify $LOAD_PATH directory (may be used more than once). Same as 'ruby -I'.
            pipe(haml()).
            pipe(gulp.dest('./public'));
     });
+
+## How to Test This Plugin
+
+    npm install
+    npm test
 
 ## Thanks
 
