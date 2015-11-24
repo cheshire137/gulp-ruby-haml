@@ -8,8 +8,8 @@ var through = require('through2');
 var PLUGIN_NAME = 'gulp-ruby-haml';
 
 var isArray = function(obj) {
-  return Object.prototype.toString.call(obj) === "[object Array]"
-}
+  return Object.prototype.toString.call(obj) === '[object Array]';
+};
 
 module.exports = function(opt) {
   'use strict';
@@ -26,8 +26,9 @@ module.exports = function(opt) {
 
     opt = opt || {};
     var options = {};
-    //Clone 'opt' into options
-    for(var key in opt) { options[key] = opt[key]; }
+    for (var key in opt) {
+      options[key] = opt[key];
+    }
     options.outExtension = options.outExtension || '.html';
     options.doubleQuote = options.doubleQuote || false;
     options.encodings = options.encodings || false;
@@ -36,52 +37,65 @@ module.exports = function(opt) {
     var fileContents = file.contents.toString('utf8');
     var args = ['haml'];
 
-    if (options.trace)
+    if (options.trace) {
       args.push('--trace');
+    }
 
-    if (options.unixNewlines)
+    if (options.unixNewlines) {
       args.push('--unix-newlines');
+    }
 
-    if (options.style != null)
+    if (options.style !== null) {
       args.push('-t', options.style.toString());
+    }
 
-    if (options.format != null)
+    if (options.format !== null) {
       args.push('-f', options.format.toString());
+    }
 
-    if (options.escapeHtml)
+    if (options.escapeHtml) {
       args.push('-e');
+    }
 
-    if (options.noEscapeAttrs)
-      args.push('--no-escape-attrs')
+    if (options.noEscapeAttrs) {
+      args.push('--no-escape-attrs');
+    }
 
-    args.push('-s');
+    args.push('-s'); // read from stdin
 
-    if (options.doubleQuote || options.doubleQuoteAttributes)
+    if (options.doubleQuote || options.doubleQuoteAttributes) {
       args.push('-q');
+    }
 
-    if (options.cdata)
+    if (options.cdata) {
       args.push('--cdata');
+    }
 
-    if (options.autoclose != null) {
+    if (options.autoclose !== null) {
       var list = options.autoclose;
-      if(isArray(list))
-        list = list.join(",");
+      if (isArray(list)) {
+        list = list.join(',');
+      }
       args.push('--autoclose', list.toString());
     }
 
-    if (options.require != null)
+    if (options.require !== null) {
       args.push('-r', '"' + options.require + '"');
+    }
 
-    if(options.suppressEval)
+    if (options.suppressEval) {
       args.push('--suppress-eval');
+    }
 
-    if(options.loadPath != null)
+    if (options.loadPath !== null) {
       args.push('-I', '"' + options.loadPath + '"');
+    }
 
     if (options.encodings) {
       args.push('-E');
       args.push(options.encodings);
     }
+
     if (options.require) {
       args.push('-r');
       args.push(options.require);
