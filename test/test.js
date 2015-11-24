@@ -1,10 +1,9 @@
 var assert = require('assert');
 var gulp = require('gulp');
 var fs = require('fs');
-var haml = require('../index');
 var path = require('path');
-
 var projectDir = path.join(__dirname, '..');
+var haml = require(projectDir + '/index');
 var destDir = path.join(projectDir, 'tmp');
 var fixtureDir = path.join(__dirname, 'fixtures');
 
@@ -28,8 +27,9 @@ describe('basic Haml conversion', function() {
                      '<a href=\'http://example.com\'>Example</a>\n' +
                      '<div ng-include="\'tpl.html\'"></div>\n';
       assert.equal(outContents, expected, 'Haml was not compiled as expected');
-      fs.unlink(outPath, function() {});
-      done();
+      fs.unlink(outPath, function() {
+        done();
+      });
     });
   });
 });
@@ -103,7 +103,7 @@ describe('basic Haml with view_helper', function() {
 
   gulp.task('view-helper-haml', function() {
     return gulp.src(inPath).
-                pipe(haml({require: ['./test/view_helper.rb']})).
+                pipe(haml({require: [projectDir + '/test/view_helper.rb']})).
                 pipe(gulp.dest(destDir));
   });
 

@@ -30,9 +30,6 @@ module.exports = function(opt) {
       options[key] = opt[key];
     }
     options.outExtension = options.outExtension || '.html';
-    options.doubleQuote = options.doubleQuote || false;
-    options.encodings = options.encodings || false;
-    options.require = options.require || false;
 
     var fileContents = file.contents.toString('utf8');
     var args = ['haml'];
@@ -91,14 +88,9 @@ module.exports = function(opt) {
       args.push('-I', '"' + options.loadPath + '"');
     }
 
-    if (options.encodings) {
+    if (typeof options.encodings !== 'undefined') {
       args.push('-E');
       args.push(options.encodings);
-    }
-
-    if (options.require) {
-      args.push('-r');
-      args.push(options.require);
     }
 
     var cp = spawn(args.shift(), args);
