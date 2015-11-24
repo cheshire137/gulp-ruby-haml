@@ -45,11 +45,11 @@ module.exports = function(opt) {
       args.push('--unix-newlines');
     }
 
-    if (options.style !== null) {
+    if (typeof options.style !== 'undefined') {
       args.push('-t', options.style.toString());
     }
 
-    if (options.format !== null) {
+    if (typeof options.format !== 'undefined') {
       args.push('-f', options.format.toString());
     }
 
@@ -71,7 +71,7 @@ module.exports = function(opt) {
       args.push('--cdata');
     }
 
-    if (options.autoclose !== null) {
+    if (typeof options.autoclose !== 'undefined') {
       var list = options.autoclose;
       if (isArray(list)) {
         list = list.join(',');
@@ -79,7 +79,7 @@ module.exports = function(opt) {
       args.push('--autoclose', list.toString());
     }
 
-    if (options.require !== null) {
+    if (typeof options.require !== 'undefined') {
       args.push('-r', '"' + options.require + '"');
     }
 
@@ -87,7 +87,7 @@ module.exports = function(opt) {
       args.push('--suppress-eval');
     }
 
-    if (options.loadPath !== null) {
+    if (typeof options.loadPath !== 'undefined') {
       args.push('-I', '"' + options.loadPath + '"');
     }
 
@@ -110,11 +110,15 @@ module.exports = function(opt) {
     });
 
     var hamlData = '';
-    cp.stdout.on('data', function(data) { hamlData += data.toString(); });
+    cp.stdout.on('data', function(data) {
+      hamlData += data.toString();
+    });
 
     var errors = '';
     cp.stderr.setEncoding('utf8');
-    cp.stderr.on('data', function(data) { errors += data.toString(); });
+    cp.stderr.on('data', function(data) {
+      errors += data.toString();
+    });
 
     cp.on('close', function(code) {
       if (errors) {
