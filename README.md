@@ -11,6 +11,8 @@ installed to use this. Try `gem install haml`. If you use
 Pass `{doubleQuote: true}` to use `"` around HTML attributes instead of `'`.
 This uses the `-q`/`--double-quote-attributes` option with `haml`.
 
+Use the `encodings` option to specify encodings, e.g., `{encodings: "UTF-8"}`.
+
 ## gulpfile.js example
 
     var gulp = require('gulp');

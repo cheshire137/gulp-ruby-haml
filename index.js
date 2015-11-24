@@ -25,6 +25,7 @@ module.exports = function (opt) {
     var options = {};
     options.outExtension = opt.outExtension || '.html';
     options.doubleQuote = opt.doubleQuote || false;
+    options.encodings = opt.encodings || false;
     options.require = opt.require || false;
 
     var file_contents = file.contents.toString('utf8');
@@ -32,6 +33,10 @@ module.exports = function (opt) {
     args.push('-s');
     if (options.doubleQuote) {
       args.push('-q');
+    }
+    if (options.encodings) {
+      args.push('-E');
+      args.push(options.encodings);
     }
     if (options.require) {
       args.push('-r');
