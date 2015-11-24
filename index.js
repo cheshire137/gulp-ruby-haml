@@ -5,17 +5,19 @@ var PluginError = gutil.PluginError;
 var clone = require('clone');
 var through = require('through2');
 
-const PLUGIN_NAME = 'gulp-ruby-haml';
+var PLUGIN_NAME = 'gulp-ruby-haml';
 
 module.exports = function (opt) {
+  'use strict';
+
   function modifyFile(file, enc, callback) {
     if (file.isNull()) {
       return callback(null, file);
     }
 
     if (file.isStream()) {
-      this.emit('error',
-                new PluginError(PLUGIN_NAME, 'Streaming not supported'));
+      this.emit('error', new PluginError(PLUGIN_NAME,
+                                         'Streaming not supported'));
       return callback(null, file);
     }
 
@@ -24,9 +26,11 @@ module.exports = function (opt) {
     options.outExtension = opt.outExtension || '.html';
     options.doubleQuote = opt.doubleQuote || false;
     options.encodings = opt.encodings || false;
+    options.require = opt.require || false;
 
-    var str = file.contents.toString('utf8');
+    var file_contents = file.contents.toString('utf8');
     var args = ['haml'];
+    args.push('-s');
     if (options.doubleQuote) {
       args.push('-q');
     }
@@ -35,6 +39,10 @@ module.exports = function (opt) {
       args.push(options.encodings);
     }
     args.push(file.path);
+    if (options.require) {
+      args.push('-r');
+      args.push(options.require);
+    }
     var cp = spawn(args.shift(), args);
 
     var self = this;
@@ -67,6 +75,9 @@ module.exports = function (opt) {
       newFile.contents = new Buffer(haml_data);
       return callback(null, newFile);
     });
+
+    cp.stdin.write(file_contents);
+    cp.stdin.end();
   }
 
   return through.obj(modifyFile);

@@ -32,6 +32,18 @@ This uses the `-q`/`--double-quote-attributes` option with `haml`.
            pipe(gulp.dest('./public'));
     });
 
+    // Pipe Haml output from one command into another without writing the
+    // Haml to file first
+    gulp.src('foo/bar/**/*.haml').
+         pipe(replace('albert', 'dilbert')).
+         pipe(haml()).
+         pipe(gulp.dest('baz'));
+
+    // Require an additional Ruby file for compilation
+    gulp.src(in_path).
+         pipe(haml({require: ["./path/to/my_ruby_script.rb"]})).
+         pipe(gulp.dest(dest_dir));
+
     // Watch for changes in Haml files
     gulp.task('haml-watch', function() {
       gulp.src('./app/assets/haml/**/*.haml', {read: false}).
@@ -39,6 +51,11 @@ This uses the `-q`/`--double-quote-attributes` option with `haml`.
            pipe(haml()).
            pipe(gulp.dest('./public'));
     });
+
+## How to Test This Plugin
+
+    npm install
+    npm test
 
 ## Thanks
 
