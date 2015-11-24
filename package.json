@@ -17,7 +17,9 @@
   },
   "scripts": {
     "test": "npm run-script style && npm run-script unit-test",
-    "style": "node_modules/.bin/jscs index.js test/test.js && node_modules/jshint/bin/jshint index.js test/test.js",
+    "jscs": "node_modules/.bin/jscs index.js test/test.js",
+    "jshint": "node_modules/jshint/bin/jshint index.js test/test.js",
+    "style": "npm run-script jscs && npm run-script jshint",
     "unit-test": "if [ -d \"tmp\" ]; then if find tmp -mindepth 1 -print -quit | grep -q .; then rm tmp/*; fi; fi; mocha"
   },
   "files": [

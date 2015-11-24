@@ -7,7 +7,7 @@ var through = require('through2');
 
 var PLUGIN_NAME = 'gulp-ruby-haml';
 
-module.exports = function (opt) {
+module.exports = function(opt) {
   'use strict';
 
   function modifyFile(file, enc, callback) {
@@ -28,7 +28,7 @@ module.exports = function (opt) {
     options.encodings = opt.encodings || false;
     options.require = opt.require || false;
 
-    var file_contents = file.contents.toString('utf8');
+    var fileContents = file.contents.toString('utf8');
     var args = ['haml'];
     args.push('-s');
     if (options.doubleQuote) {
@@ -45,19 +45,19 @@ module.exports = function (opt) {
     var cp = spawn(args.shift(), args);
 
     var self = this;
-    cp.on('error', function (err) {
+    cp.on('error', function(err) {
       self.emit('error', new PluginError(PLUGIN_NAME, err));
       return callback(null, file);
     });
 
-    var haml_data = '';
-    cp.stdout.on('data', function (data) { haml_data += data.toString(); });
+    var hamlData = '';
+    cp.stdout.on('data', function(data) { hamlData += data.toString(); });
 
     var errors = '';
     cp.stderr.setEncoding('utf8');
-    cp.stderr.on('data', function (data) { errors += data.toString(); });
+    cp.stderr.on('data', function(data) { errors += data.toString(); });
 
-    cp.on('close', function (code) {
+    cp.on('close', function(code) {
       if (errors) {
         self.emit('error', new PluginError(PLUGIN_NAME, errors));
         return callback(null, null);
@@ -71,11 +71,11 @@ module.exports = function (opt) {
 
       var newFile = clone(file);
       newFile.path = gutil.replaceExtension(file.path, options.outExtension);
-      newFile.contents = new Buffer(haml_data);
+      newFile.contents = new Buffer(hamlData);
       return callback(null, newFile);
     });
 
-    cp.stdin.write(file_contents);
+    cp.stdin.write(fileContents);
     cp.stdin.end();
   }
 
