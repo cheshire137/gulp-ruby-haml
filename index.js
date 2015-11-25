@@ -58,19 +58,19 @@ module.exports = function(opt) {
       args.push('--cdata');
     }
     if (typeof options.autoclose !== 'undefined') {
-      var list = options.autoclose;
-      if (isArray(list)) {
-        list = list.join(',');
+      var closeList = options.autoclose;
+      if (isArray(closeList)) {
+        closeList = closeList.join(',');
       }
-      args.push('--autoclose', list.toString());
+      args.push('--autoclose', closeList.toString());
     }
     if (typeof options.require !== 'undefined') {
-      var list = options.require;
-      if (!isArray(list)) {
-        list = [list];
+      var requireList = options.require;
+      if (!isArray(requireList)) {
+        requireList = [requireList];
       }
-      for (var i = 0; i < list.length; i++) {
-        args.push('-r', list[i]);
+      for (var i = 0; i < requireList.length; i++) {
+        args.push('-r', requireList[i]);
       }
     }
     if (options.suppressEval) {
