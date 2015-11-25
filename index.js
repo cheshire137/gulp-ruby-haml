@@ -7,9 +7,12 @@ var through = require('through2');
 
 var PLUGIN_NAME = 'gulp-ruby-haml';
 
+var isArray = function(obj) {
+  return Object.prototype.toString.call(obj) === '[object Array]';
+};
+
 module.exports = function(opt) {
   'use strict';
-
   function modifyFile(file, enc, callback) {
     if (file.isNull()) {
       return callback(null, file);
@@ -23,25 +26,64 @@ module.exports = function(opt) {
 
     opt = opt || {};
     var options = {};
-    options.outExtension = opt.outExtension || '.html';
-    options.doubleQuote = opt.doubleQuote || false;
-    options.encodings = opt.encodings || false;
-    options.require = opt.require || false;
+    for (var key in opt) {
+      options[key] = opt[key];
+    }
+    options.outExtension = options.outExtension || '.html';
 
     var fileContents = file.contents.toString('utf8');
-    var args = ['haml'];
-    args.push('-s');
-    if (options.doubleQuote) {
+    var args = ['haml', '-s']; // read from stdin
+    if (options.trace) {
+      args.push('--trace');
+    }
+    if (options.unixNewlines) {
+      args.push('--unix-newlines');
+    }
+    if (typeof options.style !== 'undefined') {
+      args.push('-t', options.style.toString());
+    }
+    if (typeof options.format !== 'undefined') {
+      args.push('-f', options.format.toString());
+    }
+    if (options.escapeHtml) {
+      args.push('-e');
+    }
+    if (options.noEscapeAttrs) {
+      args.push('--no-escape-attrs');
+    }
+    if (options.doubleQuote || options.doubleQuoteAttributes) {
       args.push('-q');
     }
-    if (options.encodings) {
+    if (options.cdata) {
+      args.push('--cdata');
+    }
+    if (typeof options.autoclose !== 'undefined') {
+      var closeList = options.autoclose;
+      if (isArray(closeList)) {
+        closeList = closeList.join(',');
+      }
+      args.push('--autoclose', closeList.toString());
+    }
+    if (typeof options.require !== 'undefined') {
+      var requireList = options.require;
+      if (!isArray(requireList)) {
+        requireList = [requireList];
+      }
+      for (var i = 0; i < requireList.length; i++) {
+        args.push('-r', requireList[i]);
+      }
+    }
+    if (options.suppressEval) {
+      args.push('--suppress-eval');
+    }
+    if (typeof options.loadPath !== 'undefined') {
+      args.push('-I', '"' + options.loadPath + '"');
+    }
+    if (typeof options.encodings !== 'undefined') {
       args.push('-E');
       args.push(options.encodings);
     }
-    if (options.require) {
-      args.push('-r');
-      args.push(options.require);
-    }
+
     var cp = spawn(args.shift(), args);
 
     var self = this;
@@ -51,11 +93,15 @@ module.exports = function(opt) {
     });
 
     var hamlData = '';
-    cp.stdout.on('data', function(data) { hamlData += data.toString(); });
+    cp.stdout.on('data', function(data) {
+      hamlData += data.toString();
+    });
 
     var errors = '';
     cp.stderr.setEncoding('utf8');
-    cp.stderr.on('data', function(data) { errors += data.toString(); });
+    cp.stderr.on('data', function(data) {
+      errors += data.toString();
+    });
 
     cp.on('close', function(code) {
       if (errors) {

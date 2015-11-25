@@ -20,7 +20,7 @@
     "jscs": "node_modules/.bin/jscs index.js test/test.js",
     "jshint": "node_modules/.bin/jshint index.js test/test.js",
     "style": "npm run-script jscs && npm run-script jshint",
-    "unit-test": "if [ -d \"tmp\" ]; then if find tmp -mindepth 1 -print -quit | grep -q .; then rm tmp/*; fi; fi; mocha"
+    "unit-test": "if [ -d \"tmp\" ]; then if find tmp -mindepth 1 -print -quit | grep -q .; then rm tmp/*; fi; fi; node_modules/.bin/mocha test/test.js"
   },
   "files": [
     "index.js"

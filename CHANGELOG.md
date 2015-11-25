@@ -1,6 +1,6 @@
 ## 0.0.5
 
-- Add encodings option.
+- Add `encodings` and additional command line options.
 
 ## 0.0.4
 
