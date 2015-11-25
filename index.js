@@ -32,42 +32,31 @@ module.exports = function(opt) {
     options.outExtension = options.outExtension || '.html';
 
     var fileContents = file.contents.toString('utf8');
-    var args = ['haml'];
-
+    var args = ['haml', '-s']; // read from stdin
     if (options.trace) {
       args.push('--trace');
     }
-
     if (options.unixNewlines) {
       args.push('--unix-newlines');
     }
-
     if (typeof options.style !== 'undefined') {
       args.push('-t', options.style.toString());
     }
-
     if (typeof options.format !== 'undefined') {
       args.push('-f', options.format.toString());
     }
-
     if (options.escapeHtml) {
       args.push('-e');
     }
-
     if (options.noEscapeAttrs) {
       args.push('--no-escape-attrs');
     }
-
-    args.push('-s'); // read from stdin
-
     if (options.doubleQuote || options.doubleQuoteAttributes) {
       args.push('-q');
     }
-
     if (options.cdata) {
       args.push('--cdata');
     }
-
     if (typeof options.autoclose !== 'undefined') {
       var list = options.autoclose;
       if (isArray(list)) {
@@ -75,19 +64,21 @@ module.exports = function(opt) {
       }
       args.push('--autoclose', list.toString());
     }
-
     if (typeof options.require !== 'undefined') {
-      args.push('-r', '"' + options.require + '"');
+      var list = options.require;
+      if (!isArray(list)) {
+        list = [list];
+      }
+      for (var i = 0; i < list.length; i++) {
+        args.push('-r', list[i]);
+      }
     }
-
     if (options.suppressEval) {
       args.push('--suppress-eval');
     }
-
     if (typeof options.loadPath !== 'undefined') {
       args.push('-I', '"' + options.loadPath + '"');
     }
-
     if (typeof options.encodings !== 'undefined') {
       args.push('-E');
       args.push(options.encodings);

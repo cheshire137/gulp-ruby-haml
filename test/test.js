@@ -11,26 +11,23 @@ describe('basic Haml conversion', function() {
   'use strict';
   var inPath = path.join(fixtureDir, 'basic.haml');
 
-  gulp.task('basic-haml', function() {
-    return gulp.src(inPath).
-                pipe(haml()).
-                pipe(gulp.dest(destDir));
+  before(function(done) {
+    gulp.src(inPath).
+         pipe(haml()).
+         pipe(gulp.dest(destDir)).
+         on('end', done);
   });
 
   it('compiles Haml into HTML', function(done) {
     var outPath = path.join(destDir, 'basic.html');
-    gulp.run('basic-haml', function() {
-      assert.equal(fs.existsSync(outPath), true,
-                   'Expected ' + outPath + ' to exist');
-      var outContents = fs.readFileSync(outPath, {encoding: 'utf8'});
-      var expected = '<p>Hello world!</p>\n' +
-                     '<a href=\'http://example.com\'>Example</a>\n' +
-                     '<div ng-include="\'tpl.html\'"></div>\n';
-      assert.equal(outContents, expected, 'Haml was not compiled as expected');
-      fs.unlink(outPath, function() {
-        done();
-      });
-    });
+    assert.equal(fs.existsSync(outPath), true,
+                 'Expected ' + outPath + ' to exist');
+    var outContents = fs.readFileSync(outPath, {encoding: 'utf8'});
+    var expected = '<p>Hello world!</p>\n' +
+                   '<a href=\'http://example.com\'>Example</a>\n' +
+                   '<div ng-include="\'tpl.html\'"></div>\n';
+    assert.equal(outContents, expected, 'Haml was not compiled as expected');
+    fs.unlink(outPath, done);
   });
 });
 
@@ -38,25 +35,23 @@ describe('basic Haml conversion with double quotes', function() {
   'use strict';
   var inPath = path.join(fixtureDir, 'basic.haml');
 
-  gulp.task('quoted-haml', function() {
-    return gulp.src(inPath).
-                pipe(haml({doubleQuote: true})).
-                pipe(gulp.dest(destDir));
+  before(function(done) {
+    gulp.src(inPath).
+         pipe(haml({doubleQuote: true})).
+         pipe(gulp.dest(destDir)).
+         on('end', done);
   });
 
   it('compiles Haml into HTML with double-quoted attributes', function(done) {
     var outPath = path.join(destDir, 'basic.html');
-    gulp.run('quoted-haml', function() {
-      assert.equal(fs.existsSync(outPath), true,
-                   'Expected ' + outPath + ' to exist');
-      var outContents = fs.readFileSync(outPath, {encoding: 'utf8'});
-      var expected = '<p>Hello world!</p>\n' +
-                     '<a href="http://example.com">Example</a>\n' +
-                     '<div ng-include="\'tpl.html\'"></div>\n';
-      assert.equal(outContents, expected, 'Haml was not compiled as expected');
-      fs.unlink(outPath, function() {});
-      done();
-    });
+    assert.equal(fs.existsSync(outPath), true,
+                 'Expected ' + outPath + ' to exist');
+    var outContents = fs.readFileSync(outPath, {encoding: 'utf8'});
+    var expected = '<p>Hello world!</p>\n' +
+                   '<a href="http://example.com">Example</a>\n' +
+                   '<div ng-include="\'tpl.html\'"></div>\n';
+    assert.equal(outContents, expected, 'Haml was not compiled as expected');
+    fs.unlink(outPath, done);
   });
 });
 
@@ -65,35 +60,30 @@ describe('invalid Haml', function() {
   var inPath = path.join(fixtureDir, 'invalid.haml');
   var error = null;
 
-  gulp.task('invalid-haml', function() {
-    return gulp.src(inPath).
-                pipe(haml().on('error', function(err) { error = err; })).
-                pipe(gulp.dest(destDir));
+  before(function(done) {
+    gulp.src(inPath).
+         pipe(haml().on('error', function(err) { error = err; })).
+         pipe(gulp.dest(destDir)).
+         on('end', done);
   });
 
   it('does not compile invalid Haml into HTML', function(done) {
     var outPath = path.join(destDir, 'invalid.html');
-    gulp.run('invalid-haml', function() {
-      assert.equal(fs.existsSync(outPath), false,
-                   'Expected ' + outPath + ' to not exist');
-      done();
-    });
+    assert.equal(fs.existsSync(outPath), false,
+                 'Expected ' + outPath + ' to not exist');
+    done();
   });
 
   it('does not copy source Haml file into destination dir', function(done) {
     var srcInDest = path.join(destDir, 'invalid.haml');
-    gulp.run('invalid-haml', function() {
-      assert.equal(fs.existsSync(srcInDest), false,
-                   'Expected ' + srcInDest + ' to not exist');
-      done();
-    });
+    assert.equal(fs.existsSync(srcInDest), false,
+                 'Expected ' + srcInDest + ' to not exist');
+    done();
   });
 
   it('emits an error', function(done) {
-    gulp.run('invalid-haml', function() {
-      assert(error.message.indexOf('Syntax error') > -1);
-      done();
-    });
+    assert(error.message.indexOf('Syntax error') > -1);
+    done();
   });
 });
 
@@ -101,25 +91,23 @@ describe('basic Haml with view_helper', function() {
   'use strict';
   var inPath = path.join(fixtureDir, 'view_helper.haml');
 
-  gulp.task('view-helper-haml', function() {
-    return gulp.src(inPath).
-                pipe(haml({require: [projectDir + '/test/view_helper.rb']})).
-                pipe(gulp.dest(destDir));
+  before(function(done) {
+    gulp.src(inPath).
+         pipe(haml({require: ['./test/view_helper.rb']})).
+         pipe(gulp.dest(destDir)).
+         on('end', done);
   });
 
   it('compiles Haml into HTML', function(done) {
     var outPath = path.join(destDir, 'view_helper.html');
-    gulp.run('view-helper-haml', function() {
-      assert.equal(fs.existsSync(outPath), true,
-                   'Expected ' + outPath + ' to exist');
-      var outContents = fs.readFileSync(outPath, {encoding: 'utf8'});
-      var expected = '<p>Hello world!</p>\n' +
-                     '<a href=\'http://example.com\'>Example</a>\n' +
-                     '<div ng-include="\'tpl.html\'"></div>\n';
-      assert.equal(outContents, expected, 'Haml was not compiled as expected');
-      fs.unlink(outPath, function() {});
-      done();
-    });
+    assert.equal(fs.existsSync(outPath), true,
+                 'Expected ' + outPath + ' to exist');
+    var outContents = fs.readFileSync(outPath, {encoding: 'utf8'});
+    var expected = '<p>Hello world!</p>\n' +
+                   '<a href=\'http://example.com\'>Example</a>\n' +
+                   '<div ng-include="\'tpl.html\'"></div>\n';
+    assert.equal(outContents, expected, 'Haml was not compiled as expected');
+    fs.unlink(outPath, done);
   });
 });
 

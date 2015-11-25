@@ -20,7 +20,7 @@ Output format. Can be html5 (default), xhtml, or html4.
 
 ### require
 Require additional ruby files. Same as 'ruby -r'.
-`{require: "./my_haml_helpers.rb"}`
+`{require: ["./my_haml_helpers.rb"]}`
 
 ### escapeHtml
 Escape HTML characters (like ampersands and angle brackets) by default.
