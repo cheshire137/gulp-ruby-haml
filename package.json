@@ -1,16 +1,16 @@
 {
   "name": "gulp-ruby-haml",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Compile Haml to HTML with Ruby Haml",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/moneypenny/gulp-ruby-haml.git"
+    "url": "https://github.com/cheshire137/gulp-ruby-haml.git"
   },
   "author": {
     "name": "Sarah Vessels",
     "email": "cheshire137@gmail.com",
-    "url": "http://www.sarah-vessels.com"
+    "url": "http://www.sarahvessels.com"
   },
   "engines": {
     "node": ">=0.10.0"

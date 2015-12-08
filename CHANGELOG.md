@@ -1,3 +1,7 @@
+## 0.0.6
+
+- Change GitHub link.
+
 ## 0.0.5
 
 - Add `encodings` and additional command line options.
