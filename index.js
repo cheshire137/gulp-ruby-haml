@@ -92,9 +92,9 @@ module.exports = function(opt) {
       return callback(null, file);
     });
 
-    var hamlData = '';
+    var hamlData = new Buffer(0);
     cp.stdout.on('data', function(data) {
-      hamlData += data.toString();
+      hamlData = Buffer.concat([hamlData, data]);
     });
 
     var errors = '';
