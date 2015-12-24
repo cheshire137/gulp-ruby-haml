@@ -1,3 +1,7 @@
+## 0.0.7
+
+- Fix for multibyte characters getting garbled thanks to kuchida.
+
 ## 0.0.6
 
 - Change GitHub link.
