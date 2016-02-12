@@ -16,7 +16,6 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "pretest": "npm install",
     "test": "npm run-script style && npm run-script unit-test",
     "jscs": "node_modules/.bin/jscs index.js test/test.js",
     "jshint": "node_modules/.bin/jshint index.js test/test.js",

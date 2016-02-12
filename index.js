@@ -85,17 +85,19 @@ module.exports = function(opt) {
     }
 
     var cp = spawn(args.shift(), args);
+    var noHamlError = 'gulp-ruby-haml: the haml executable was not found, ' +
+                      'please install Haml, e.g., gem install haml';
 
     var self = this;
     cp.on('error', function(err) {
+      var message = err;
       if (err.code === 'ENOENT') {
         var isHaml = err.syscall === 'spawn haml' || err.path === 'haml';
         if (isHaml) {
-          console.log('gulp-ruby-haml: the haml executable was not found, ' +
-                      'please install Haml, e.g., gem install haml');
+          message = noHamlError;
         }
       }
-      self.emit('error', new PluginError(PLUGIN_NAME, err));
+      self.emit('error', new PluginError(PLUGIN_NAME, message));
       return callback(null, file);
     });
 
@@ -107,7 +109,11 @@ module.exports = function(opt) {
     var errors = '';
     cp.stderr.setEncoding('utf8');
     cp.stderr.on('data', function(data) {
-      errors += data.toString();
+      var str = data.toString();
+      if (str.indexOf('haml: command not found') > -1) {
+        errors += noHamlError + "\n";
+      }
+      errors += str;
     });
 
     cp.on('close', function(code) {
