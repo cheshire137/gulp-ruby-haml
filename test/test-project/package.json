@@ -5,9 +5,10 @@
   "devDependencies": {
     "gulp": "~3.5.2",
     "gulp-watch": "~0.5.0",
-    "gulp-ruby-haml": "0.0.7"
+    "gulp-ruby-haml": "file:../../"
   },
   "scripts": {
+    "prestart": "if [ -d node_modules/gulp-ruby-haml ]; then rm -r node_modules/gulp-ruby-haml; fi; npm install",
     "start": "gulp"
   }
 }
