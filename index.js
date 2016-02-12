@@ -88,6 +88,13 @@ module.exports = function(opt) {
 
     var self = this;
     cp.on('error', function(err) {
+      if (err.code === 'ENOENT') {
+        var isHaml = err.syscall === 'spawn haml' || err.path === 'haml';
+        if (isHaml) {
+          console.log('gulp-ruby-haml: the haml executable was not found, ' +
+                      'please install Haml, e.g., gem install haml');
+        }
+      }
       self.emit('error', new PluginError(PLUGIN_NAME, err));
       return callback(null, file);
     });
