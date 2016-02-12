@@ -121,7 +121,7 @@ describe('Haml conversion without haml installed', function() {
   it('says to install haml', function(done) {
     var gotError = false;
     gulp.src(inPath).
-         pipe(haml().on('error', function(e) {
+         pipe(haml({hamlPath: './no-haml-here'}).on('error', function(e) {
            assert(e.message.indexOf(expected) > -1);
            gotError = true;
            done();

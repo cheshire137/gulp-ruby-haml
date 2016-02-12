@@ -32,7 +32,13 @@ module.exports = function(opt) {
     options.outExtension = options.outExtension || '.html';
 
     var fileContents = file.contents.toString('utf8');
-    var args = ['haml', '-s']; // read from stdin
+    var args = [];
+    if (options.hamlPath) {
+      args.push(options.hamlPath);
+    } else {
+      args.push('haml');
+    }
+    args.push('-s'); // read from stdin
     if (options.trace) {
       args.push('--trace');
     }
@@ -92,7 +98,10 @@ module.exports = function(opt) {
     cp.on('error', function(err) {
       var message = err;
       if (err.code === 'ENOENT') {
-        var isHaml = err.syscall === 'spawn haml' || err.path === 'haml';
+        var isHaml =
+            err.path === 'haml' && typeof options.hamlPath === 'undefined' ||
+            err.path === options.hamlPath &&
+            typeof options.hamlPath === 'string';
         if (isHaml) {
           message = noHamlError;
         }

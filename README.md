@@ -8,6 +8,10 @@ installed to use this. Try `gem install haml`. If you use
 
 ## Options
 
+### haml path
+Specify where the haml executable is. Defaults to just `haml` if not provided.
+`{hamlPath: '/path/to/haml'}`
+
 ### style
 Output style. Can be indented (default) or ugly.
 `{style: ugly}`
