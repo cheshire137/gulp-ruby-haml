@@ -32,13 +32,9 @@ module.exports = function(opt) {
     options.outExtension = options.outExtension || '.html';
 
     var fileContents = file.contents.toString('utf8');
-    var args = [];
-    if (options.hamlPath) {
-      args.push(options.hamlPath);
-    } else {
-      args.push('haml');
-    }
-    args.push('-s'); // read from stdin
+    var hamlPath = options.hamlPath || 'haml';
+
+    var args = [hamlPath, '-s']; // read from stdin
     if (options.trace) {
       args.push('--trace');
     }
@@ -98,10 +94,7 @@ module.exports = function(opt) {
     cp.on('error', function(err) {
       var message = err;
       if (err.code === 'ENOENT') {
-        var isHaml =
-            err.path === 'haml' && typeof options.hamlPath === 'undefined' ||
-            err.path === options.hamlPath &&
-            typeof options.hamlPath === 'string';
+        var isHaml = err.path === hamlPath;
         if (isHaml) {
           message = noHamlError;
         }
@@ -119,7 +112,7 @@ module.exports = function(opt) {
     cp.stderr.setEncoding('utf8');
     cp.stderr.on('data', function(data) {
       var str = data.toString();
-      if (str.indexOf('haml: command not found') > -1) {
+      if (str.indexOf(hamlPath + ': command not found') > -1) {
         errors += noHamlError + "\n";
       }
       errors += str;

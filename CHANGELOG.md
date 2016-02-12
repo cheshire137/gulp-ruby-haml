@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.0.9
+
+- Better detection of when haml executable is not installed.
+
 ## 0.0.8
 
 - Better error message when haml executable is not found.
