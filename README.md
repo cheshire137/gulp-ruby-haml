@@ -63,7 +63,7 @@ Use the `encodings` option to specify encodings, e.g., `{encodings: "UTF-8"}`.
     // Compile Haml into HTML
     gulp.task('haml', function() {
       gulp.src('./app/assets/haml/**/*.haml', {read: false}).
-           pipe(haml()).
+           pipe(haml().on('error', function(e) { console.log(e.message); })).
            pipe(gulp.dest('./public'));
     });
 
