@@ -1,3 +1,14 @@
+# Change Log
+
+## 0.0.9
+
+- Better detection of when haml executable is not installed.
+
+## 0.0.8
+
+- Better error message when haml executable is not found.
+- Add `hamlPath` option for specifying path to haml executable.
+
 ## 0.0.7
 
 - Fix for multibyte characters getting garbled thanks to kuchida.

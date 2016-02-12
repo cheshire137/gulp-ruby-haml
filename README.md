@@ -8,6 +8,10 @@ installed to use this. Try `gem install haml`. If you use
 
 ## Options
 
+### hamlPath
+Specify where the haml executable is. Defaults to just `haml` if not provided.
+`{hamlPath: '/path/to/haml'}`
+
 ### style
 Output style. Can be indented (default) or ugly.
 `{style: ugly}`
@@ -63,7 +67,7 @@ Use the `encodings` option to specify encodings, e.g., `{encodings: "UTF-8"}`.
     // Compile Haml into HTML
     gulp.task('haml', function() {
       gulp.src('./app/assets/haml/**/*.haml', {read: false}).
-           pipe(haml()).
+           pipe(haml().on('error', function(e) { console.log(e.message); })).
            pipe(gulp.dest('./public'));
     });
 

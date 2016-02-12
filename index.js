@@ -32,7 +32,9 @@ module.exports = function(opt) {
     options.outExtension = options.outExtension || '.html';
 
     var fileContents = file.contents.toString('utf8');
-    var args = ['haml', '-s']; // read from stdin
+    var hamlPath = options.hamlPath || 'haml';
+
+    var args = [hamlPath, '-s']; // read from stdin
     if (options.trace) {
       args.push('--trace');
     }
@@ -85,10 +87,19 @@ module.exports = function(opt) {
     }
 
     var cp = spawn(args.shift(), args);
+    var noHamlError = 'gulp-ruby-haml: the haml executable was not found, ' +
+                      'please install Haml, e.g., gem install haml';
 
     var self = this;
     cp.on('error', function(err) {
-      self.emit('error', new PluginError(PLUGIN_NAME, err));
+      var message = err;
+      if (err.code === 'ENOENT') {
+        var isHaml = err.path === hamlPath;
+        if (isHaml) {
+          message = noHamlError;
+        }
+      }
+      self.emit('error', new PluginError(PLUGIN_NAME, message));
       return callback(null, file);
     });
 
@@ -100,7 +111,11 @@ module.exports = function(opt) {
     var errors = '';
     cp.stderr.setEncoding('utf8');
     cp.stderr.on('data', function(data) {
-      errors += data.toString();
+      var str = data.toString();
+      if (str.indexOf(hamlPath + ': command not found') > -1) {
+        errors += noHamlError + "\n";
+      }
+      errors += str;
     });
 
     cp.on('close', function(code) {

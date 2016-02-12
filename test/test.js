@@ -111,3 +111,25 @@ describe('basic Haml with view_helper', function() {
   });
 });
 
+
+describe('Haml conversion without haml installed', function() {
+  'use strict';
+  var inPath = path.join(fixtureDir, 'basic.haml');
+  var expected = 'gulp-ruby-haml: the haml executable was not found, please ' +
+                 'install Haml, e.g., gem install haml';
+
+  it('says to install haml', function(done) {
+    var gotError = false;
+    gulp.src(inPath).
+         pipe(haml({hamlPath: './no-haml-here'}).on('error', function(e) {
+           assert(e.message.indexOf(expected) > -1);
+           gotError = true;
+           done();
+         })).
+         pipe(gulp.dest(destDir)).
+         on('end', function() {
+           assert(gotError, 'Should have thrown an error for missing haml');
+           done();
+         });
+  });
+});
