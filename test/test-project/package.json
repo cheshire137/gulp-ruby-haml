@@ -1,0 +1,13 @@
+{
+  "name": "chickens",
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+    "gulp": "~3.5.2",
+    "gulp-watch": "~0.5.0",
+    "gulp-ruby-haml": "0.0.7"
+  },
+  "scripts": {
+    "start": "gulp"
+  }
+}
