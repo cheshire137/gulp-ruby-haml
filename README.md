@@ -58,7 +58,7 @@ specify $LOAD_PATH directory (may be used more than once). Same as 'ruby -I'.
 
 ### outExtension
 Set the output extension. Defaults to '.html'.
-`outExtension: ".hbs"`
+`{outExtension: ".hbs"}`
 
 Use the `encodings` option to specify encodings, e.g., `{encodings: "UTF-8"}`.
 
