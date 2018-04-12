@@ -56,6 +56,10 @@ List of elements to be automatically self-closed.
 specify $LOAD_PATH directory (may be used more than once). Same as 'ruby -I'.
 `{loadPath: "my/load/path"}`
 
+### outExtension
+Set the output extension. Defaults to '.html'.
+`{outExtension: ".hbs"}`
+
 Use the `encodings` option to specify encodings, e.g., `{encodings: "UTF-8"}`.
 
 ## gulpfile.js example
@@ -97,6 +101,18 @@ Use the `encodings` option to specify encodings, e.g., `{encodings: "UTF-8"}`.
            pipe(watch()).
            pipe(haml()).
            pipe(gulp.dest('./public'));
+    });
+
+    // Change the output extension
+    gulp.task("haml-to-handlebars", function() {
+      gulp
+        .src("./source/handlebars/**/*.haml")
+        .pipe(
+          haml({
+            outExtension: ".hbs"
+          })
+        )
+        .pipe(gulp.dest("./handlebars"));
     });
 
 ## How to Test This Plugin
