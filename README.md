@@ -103,7 +103,7 @@ Use the `encodings` option to specify encodings, e.g., `{encodings: "UTF-8"}`.
            pipe(gulp.dest('./public'));
     });
 
-    // Change the output output extension
+    // Change the output extension
     gulp.task("haml-to-handlbars", function() {
       gulp
         .src("./source/handlebars/**/*.haml")
